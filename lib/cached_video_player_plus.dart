@@ -22,10 +22,10 @@ import 'package:video_player_platform_interface/video_player_platform_interface.
 import 'src/closed_caption_file.dart';
 import 'src/video_cache_manager.dart';
 
-export 'package:video_player_platform_interface/video_player_platform_interface.dart'
-    show DataSourceType, DurationRange, VideoFormat, VideoPlayerOptions;
+export 'package:video_player_platform_interface/video_player_platform_interface.dart' show DataSourceType, DurationRange, VideoFormat, VideoPlayerOptions;
 
 export 'src/closed_caption_file.dart';
+export 'src/video_cache_manager.dart';
 
 VideoPlayerPlatform? _lastVideoPlayerPlatform;
 
@@ -65,8 +65,7 @@ class CachedVideoPlayerPlusValue {
   });
 
   /// Returns an instance for a video that hasn't been loaded.
-  const CachedVideoPlayerPlusValue.uninitialized()
-      : this(duration: Duration.zero, isInitialized: false);
+  const CachedVideoPlayerPlusValue.uninitialized() : this(duration: Duration.zero, isInitialized: false);
 
   /// Returns an instance with the given [errorDescription].
   const CachedVideoPlayerPlusValue.erroneous(String errorDescription)
@@ -191,9 +190,7 @@ class CachedVideoPlayerPlusValue {
       volume: volume ?? this.volume,
       playbackSpeed: playbackSpeed ?? this.playbackSpeed,
       rotationCorrection: rotationCorrection ?? this.rotationCorrection,
-      errorDescription: errorDescription != _defaultErrorDescription
-          ? errorDescription
-          : this.errorDescription,
+      errorDescription: errorDescription != _defaultErrorDescription ? errorDescription : this.errorDescription,
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
@@ -277,8 +274,7 @@ String _getCacheKey(String dataSource) {
 /// To reclaim the resources used by the player call [dispose].
 ///
 /// After [dispose] all further calls are ignored.
-class CachedVideoPlayerPlusController
-    extends ValueNotifier<CachedVideoPlayerPlusValue> {
+class CachedVideoPlayerPlusController extends ValueNotifier<CachedVideoPlayerPlusValue> {
   /// Constructs a [CachedVideoPlayerPlusController] playing a video from an asset.
   ///
   /// The name of the asset is given by the [dataSource] argument and must not be
@@ -516,9 +512,7 @@ class CachedVideoPlayerPlusController
       }
 
       if (cachedFile == null) {
-        _cacheManager
-            .downloadFile(dataSource, authHeaders: httpHeaders)
-            .then((_) {
+        _cacheManager.downloadFile(dataSource, authHeaders: httpHeaders).then((_) {
           _storage.write(
             _getCacheKey(dataSource),
             DateTime.timestamp().millisecondsSinceEpoch,
@@ -529,15 +523,12 @@ class CachedVideoPlayerPlusController
         isCacheAvailable = true;
       }
 
-      realDataSource = isCacheAvailable
-          ? Uri.file(cachedFile!.file.path).toString()
-          : dataSource;
+      realDataSource = isCacheAvailable ? Uri.file(cachedFile!.file.path).toString() : dataSource;
     } else {
       realDataSource = dataSource;
     }
 
-    final bool allowBackgroundPlayback =
-        videoPlayerOptions?.allowBackgroundPlayback ?? false;
+    final bool allowBackgroundPlayback = videoPlayerOptions?.allowBackgroundPlayback ?? false;
     if (!allowBackgroundPlayback) {
       _lifeCycleObserver = _VideoAppLifeCycleObserver(this);
     }
@@ -554,9 +545,7 @@ class CachedVideoPlayerPlusController
         );
       case DataSourceType.network:
         dataSourceDescription = DataSource(
-          sourceType: _shouldUseCache && isCacheAvailable
-              ? DataSourceType.file
-              : DataSourceType.network,
+          sourceType: _shouldUseCache && isCacheAvailable ? DataSourceType.file : DataSourceType.network,
           uri: realDataSource,
           formatHint: formatHint,
           httpHeaders: httpHeaders,
@@ -580,8 +569,7 @@ class CachedVideoPlayerPlusController
       );
     }
 
-    _textureId = (await _videoPlayerPlatform.create(dataSourceDescription)) ??
-        kUninitializedTextureId;
+    _textureId = (await _videoPlayerPlatform.create(dataSourceDescription)) ?? kUninitializedTextureId;
     _creatingCompleter!.complete(null);
     final Completer<void> initializingCompleter = Completer<void>();
 
@@ -644,9 +632,7 @@ class CachedVideoPlayerPlusController
       }
     }
 
-    _eventSubscription = _videoPlayerPlatform
-        .videoEventsFor(_textureId)
-        .listen(eventListener, onError: errorListener);
+    _eventSubscription = _videoPlayerPlatform.videoEventsFor(_textureId).listen(eventListener, onError: errorListener);
     return initializingCompleter.future;
   }
 
@@ -1116,8 +1102,7 @@ class _VideoScrubberState extends State<VideoScrubber> {
         seekToRelativePosition(details.globalPosition);
       },
       onHorizontalDragEnd: (DragEndDetails details) {
-        if (_controllerWasPlaying &&
-            controller.value.position != controller.value.duration) {
+        if (_controllerWasPlaying && controller.value.position != controller.value.duration) {
           controller.play();
         }
       },

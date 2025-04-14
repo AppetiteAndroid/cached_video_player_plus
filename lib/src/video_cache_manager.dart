@@ -10,11 +10,13 @@ class VideoCacheManager extends CacheManager {
   static const key = 'libCachedVideoPlayerPlusData';
 
   /// The singleton instance of the [VideoCacheManager].
-  static final VideoCacheManager _instance = VideoCacheManager._();
+  static VideoCacheManager? _instance;
 
   /// Returns the singleton instance of the [VideoCacheManager].
-  factory VideoCacheManager() => _instance;
+  factory VideoCacheManager({Config? config}) {
+    return _instance ??= VideoCacheManager._(config: config);
+  }
 
   /// Creates a new instance of the [VideoCacheManager].
-  VideoCacheManager._() : super(Config(key));
+  VideoCacheManager._({Config? config}) : super(config ?? Config(key));
 }
