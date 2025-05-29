@@ -1000,10 +1000,10 @@ class _CachedVideoPlayerPlusWithRotation extends StatelessWidget {
   @override
   Widget build(BuildContext context) => rotation == 0
       ? child
-      : Transform.rotate(
-          angle: rotation * math.pi / 180,
-          child: child,
-        );
+      : RotatedBox(
+        quarterTurns: rotation ~/ 90,
+        child: child,
+      );
 }
 
 /// Used to configure the [VideoProgressIndicator] widget's colors for how it
