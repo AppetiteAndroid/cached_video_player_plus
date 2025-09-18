@@ -10,8 +10,6 @@ library cached_video_player_plus;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:math' as math;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -439,7 +437,7 @@ class CachedVideoPlayerPlusController extends ValueNotifier<CachedVideoPlayerPlu
 
   /// Attempts to open the given [dataSource] and load metadata about the video.
   Future<void> initialize({
-    VideoViewType viewType = VideoViewType.platformView,
+    int viewType = 0,
   }) async {
     await _storage.initStorage;
 
@@ -518,7 +516,9 @@ class CachedVideoPlayerPlusController extends ValueNotifier<CachedVideoPlayerPlu
       await _videoPlayerPlatform.setMixWithOthers(videoPlayerOptions!.mixWithOthers);
     }
 
-    _textureId = (await _videoPlayerPlatform.createWithOptions(VideoCreationOptions(dataSource: dataSourceDescription, viewType: viewType))) ?? kUninitializedTextureId;
+    _textureId = (await _videoPlayerPlatform.createWithOptions(VideoCreationOptions(
+            dataSource: dataSourceDescription, viewType: VideoViewType.values.elementAtOrNull(viewType) ?? (Platform.isAndroid ? VideoViewType.textureView : VideoViewType.platformView)))) ??
+        kUninitializedTextureId;
     _creatingCompleter!.complete(null);
     final Completer<void> initializingCompleter = Completer<void>();
 
